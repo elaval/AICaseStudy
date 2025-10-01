@@ -40,11 +40,20 @@ function getStatus(isRelevant, relevanceScore) {
   return 'Planned';
 }
 
+// Create deterministic ID from content
+function createDeterministicId(row, index) {
+  if (row.caseId) return row.caseId;
+  // Create stable ID from title and sector
+  const title = (row.ai_title || row.original_title || '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const sector = (row.sector || '').toLowerCase().replace(/[^a-z0-9]/g, '-');
+  return `${sector}-${title}-${index}`.substring(0, 100);
+}
+
 // Transform the data to match our schema
 const aiCases = rawData
   .filter(row => row.is_relevant) // Only include relevant cases
-  .map((row) => ({
-    id: row.caseId || String(Math.random()),
+  .map((row, index) => ({
+    id: createDeterministicId(row, index),
     title: row.ai_title || row.original_title || 'Untitled Case',
     category: extractCategory(row.use_case_tags, row.sector),
     status: getStatus(row.is_relevant, row.relevance_score),
