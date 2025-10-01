@@ -19,7 +19,7 @@ export default defineConfig({
         ]
       : []),
   ],
-  base: '/AICaseStudy/', // ← Add this! Use your repo name
+  base: process.env.NODE_ENV === "production" ? "/AICaseStudy/" : "/",  // ← Add this line
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
