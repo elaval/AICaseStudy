@@ -31,11 +31,13 @@ export default function Home() {
 
   const filteredCases = useMemo(() => {
     return allAICases.filter((aiCase) => {
+      const q = searchQuery.toLowerCase();
       const matchesSearch =
         searchQuery === "" ||
-        aiCase.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        aiCase.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        aiCase.industry?.toLowerCase().includes(searchQuery.toLowerCase());
+        aiCase.title.toLowerCase().includes(q) ||
+        (aiCase.description ?? "").toLowerCase().includes(q) ||
+        (aiCase.industry ?? "").toLowerCase().includes(q) ||
+        (aiCase.primaryMode ?? "").toLowerCase().includes(q);
 
       const matchesCategory =
         selectedCategories.length === 0 ||
