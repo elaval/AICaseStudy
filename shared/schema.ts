@@ -32,6 +32,13 @@ export const aiCases = pgTable("ai_cases", {
   keyMetrics: text("key_metrics"),
   challenges: text("challenges"),
   solutions: text("solutions"),
+  primaryMode: text("primary_mode"),
+  secondaryModes: text("secondary_modes"),
+  maturity: text("maturity"),
+  humanAiModel: text("human_ai_model"),
+  dataRequirement: text("data_requirement"),
+  riskProfile: text("risk_profile"),
+  originalUrl: text("original_url"),
 });
 
 export const insertAICaseSchema = createInsertSchema(aiCases).omit({
