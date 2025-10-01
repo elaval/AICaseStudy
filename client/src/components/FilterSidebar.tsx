@@ -98,6 +98,28 @@ export function FilterSidebar({
       <ScrollArea className="h-[calc(100vh-400px)]">
         <div className="space-y-6">
           <div>
+            <h4 className="mb-3 text-sm font-medium">Primary Mode</h4>
+            <div className="space-y-2">
+              {primaryModes.map((mode) => (
+                <div key={mode} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`mode-${mode}`}
+                    checked={selectedPrimaryModes.includes(mode)}
+                    onCheckedChange={() => onPrimaryModeToggle(mode)}
+                    data-testid={`checkbox-mode-${mode}`}
+                  />
+                  <Label
+                    htmlFor={`mode-${mode}`}
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    {mode}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
             <h4 className="mb-3 text-sm font-medium">Category</h4>
             <div className="space-y-2">
               {categories.map((category) => (
@@ -135,28 +157,6 @@ export function FilterSidebar({
                     className="text-sm font-normal cursor-pointer"
                   >
                     {status}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h4 className="mb-3 text-sm font-medium">Primary Mode</h4>
-            <div className="space-y-2">
-              {primaryModes.map((mode) => (
-                <div key={mode} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`mode-${mode}`}
-                    checked={selectedPrimaryModes.includes(mode)}
-                    onCheckedChange={() => onPrimaryModeToggle(mode)}
-                    data-testid={`checkbox-mode-${mode}`}
-                  />
-                  <Label
-                    htmlFor={`mode-${mode}`}
-                    className="text-sm font-normal cursor-pointer"
-                  >
-                    {mode}
                   </Label>
                 </div>
               ))}
