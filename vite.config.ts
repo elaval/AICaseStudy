@@ -19,6 +19,7 @@ export default defineConfig({
         ]
       : []),
   ],
+  base: '/AICaseStudy/', // ← Add this! Use your repo name
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
