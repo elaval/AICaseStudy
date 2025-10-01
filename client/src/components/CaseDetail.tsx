@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, Building2, Cpu, TrendingUp } from "lucide-react";
+import { ArrowLeft, Calendar, Building2, Cpu, TrendingUp, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -169,6 +169,39 @@ export function CaseDetail({ aiCase, onBack }: CaseDetailProps) {
                       <p className="text-sm text-muted-foreground" data-testid="text-date">
                         {aiCase.dateImplemented}
                       </p>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {aiCase.primaryMode && (
+                <>
+                  <Separator />
+                  <div>
+                    <p className="text-sm font-medium">Primary Mode</p>
+                    <p className="text-sm text-muted-foreground" data-testid="text-primary-mode">
+                      {aiCase.primaryMode}
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {aiCase.originalUrl && (
+                <>
+                  <Separator />
+                  <div className="flex items-start gap-3">
+                    <ExternalLink className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium">Original Source</p>
+                      <a
+                        href={aiCase.originalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline break-all"
+                        data-testid="link-original-url"
+                      >
+                        View source
+                      </a>
                     </div>
                   </div>
                 </>

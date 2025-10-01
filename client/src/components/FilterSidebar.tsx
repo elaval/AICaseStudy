@@ -8,23 +8,29 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 interface FilterSidebarProps {
   categories: string[];
   statuses: string[];
+  primaryModes: string[];
   selectedCategories: string[];
   selectedStatuses: string[];
+  selectedPrimaryModes: string[];
   onCategoryToggle: (category: string) => void;
   onStatusToggle: (status: string) => void;
+  onPrimaryModeToggle: (mode: string) => void;
   onClearFilters: () => void;
 }
 
 export function FilterSidebar({
   categories,
   statuses,
+  primaryModes,
   selectedCategories,
   selectedStatuses,
+  selectedPrimaryModes,
   onCategoryToggle,
   onStatusToggle,
+  onPrimaryModeToggle,
   onClearFilters,
 }: FilterSidebarProps) {
-  const hasFilters = selectedCategories.length > 0 || selectedStatuses.length > 0;
+  const hasFilters = selectedCategories.length > 0 || selectedStatuses.length > 0 || selectedPrimaryModes.length > 0;
 
   return (
     <div className="w-full lg:w-64 space-y-6">
@@ -72,6 +78,20 @@ export function FilterSidebar({
               />
             </Badge>
           ))}
+          {selectedPrimaryModes.map((mode) => (
+            <Badge
+              key={mode}
+              variant="secondary"
+              className="gap-1"
+              data-testid={`badge-filter-${mode}`}
+            >
+              {mode}
+              <X
+                className="h-3 w-3 cursor-pointer"
+                onClick={() => onPrimaryModeToggle(mode)}
+              />
+            </Badge>
+          ))}
         </div>
       )}
 
@@ -115,6 +135,28 @@ export function FilterSidebar({
                     className="text-sm font-normal cursor-pointer"
                   >
                     {status}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="mb-3 text-sm font-medium">Primary Mode</h4>
+            <div className="space-y-2">
+              {primaryModes.map((mode) => (
+                <div key={mode} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`mode-${mode}`}
+                    checked={selectedPrimaryModes.includes(mode)}
+                    onCheckedChange={() => onPrimaryModeToggle(mode)}
+                    data-testid={`checkbox-mode-${mode}`}
+                  />
+                  <Label
+                    htmlFor={`mode-${mode}`}
+                    className="text-sm font-normal cursor-pointer"
+                  >
+                    {mode}
                   </Label>
                 </div>
               ))}

@@ -14,6 +14,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedPrimaryModes, setSelectedPrimaryModes] = useState<string[]>([]);
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
 
   const categories = useMemo(() => {
@@ -22,6 +23,10 @@ export default function Home() {
 
   const statuses = useMemo(() => {
     return Array.from(new Set(allAICases.map((c) => c.status))).sort();
+  }, []);
+
+  const primaryModes = useMemo(() => {
+    return Array.from(new Set(allAICases.map((c) => c.primaryMode).filter(Boolean) as string[])).sort();
   }, []);
 
   const filteredCases = useMemo(() => {
@@ -39,9 +44,13 @@ export default function Home() {
       const matchesStatus =
         selectedStatuses.length === 0 || selectedStatuses.includes(aiCase.status);
 
-      return matchesSearch && matchesCategory && matchesStatus;
+      const matchesPrimaryMode =
+        selectedPrimaryModes.length === 0 ||
+        (aiCase.primaryMode && selectedPrimaryModes.includes(aiCase.primaryMode));
+
+      return matchesSearch && matchesCategory && matchesStatus && matchesPrimaryMode;
     });
-  }, [searchQuery, selectedCategories, selectedStatuses]);
+  }, [searchQuery, selectedCategories, selectedStatuses, selectedPrimaryModes]);
 
   const selectedCase = selectedCaseId
     ? allAICases.find((c) => c.id === selectedCaseId)
@@ -61,15 +70,23 @@ export default function Home() {
     );
   };
 
+  const togglePrimaryMode = (mode: string) => {
+    setSelectedPrimaryModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode]
+    );
+  };
+
   const clearFilters = () => {
     setSelectedCategories([]);
     setSelectedStatuses([]);
+    setSelectedPrimaryModes([]);
     setSearchQuery("");
   };
 
   const hasFilters =
     selectedCategories.length > 0 ||
     selectedStatuses.length > 0 ||
+    selectedPrimaryModes.length > 0 ||
     searchQuery !== "";
 
   if (selectedCase) {
@@ -109,10 +126,13 @@ export default function Home() {
             <FilterSidebar
               categories={categories}
               statuses={statuses}
+              primaryModes={primaryModes}
               selectedCategories={selectedCategories}
               selectedStatuses={selectedStatuses}
+              selectedPrimaryModes={selectedPrimaryModes}
               onCategoryToggle={toggleCategory}
               onStatusToggle={toggleStatus}
+              onPrimaryModeToggle={togglePrimaryMode}
               onClearFilters={clearFilters}
             />
           </aside>
