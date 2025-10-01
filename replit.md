@@ -2,7 +2,9 @@
 
 ## Overview
 
-This is a full-stack web application for browsing and exploring AI case studies. The application presents a dataset of AI implementations across various industries and categories, providing search, filtering, and detailed viewing capabilities. Built with a modern React frontend and Express backend, it uses a PostgreSQL database (via Drizzle ORM) for data persistence and features a dark/light theme with a sophisticated UI powered by Shadcn UI components.
+This is a **pure static web application** for browsing and exploring AI case studies, deployable to GitHub Pages or any static hosting service. The application presents a dataset of 102 AI implementations across various industries and categories, providing search, filtering, and detailed viewing capabilities. Built with React and TypeScript, it uses a static JSON data file (parsed from Excel) and features a dark/light theme with a sophisticated UI powered by Shadcn UI components.
+
+**Deployment Ready**: This app is fully static with no backend dependencies and can be deployed to GitHub Pages, Netlify, Vercel, or any static hosting service.
 
 ## User Preferences
 
@@ -21,9 +23,9 @@ Preferred communication style: Simple, everyday language.
 - Inter font family for typography
 
 **State Management**: 
-- React Query (@tanstack/react-query) for server state management and data fetching
 - Local React state (useState, useMemo) for UI interactions like filters and search
-- Currently uses static JSON data (ai-cases.json) but architected for API integration
+- Static JSON data loaded at build time from client/src/data/ai-cases.json
+- All data processing (filtering, searching) happens client-side
 
 **Routing**: Wouter for lightweight client-side routing
 
@@ -41,55 +43,34 @@ Preferred communication style: Simple, everyday language.
 - Consistent spacing and typography scale
 - Professional, data-dense design suitable for enterprise contexts
 
-### Backend Architecture
+### Data Source
 
-**Framework**: Express.js with TypeScript running on Node.js
+**Excel to JSON Conversion**: 
+- Source: Excel file at `attached_assets/Report Summary_1759337111366.xlsx`
+- Parser script: `scripts/parse-excel.js` (Node.js script using xlsx package)
+- Output: `client/src/data/ai-cases.json` containing 102 AI cases
 
-**API Structure**: RESTful API with `/api` prefix for all routes (currently minimal implementation)
+**Data Processing**:
+- Excel file is parsed once at build time
+- Data is mapped to AICase schema with deterministic IDs
+- Only relevant cases (is_relevant=true) are included
+- Categories extracted from use_case_tags, statuses derived from relevance_score
 
-**Build Process**:
-- Development: TSX for hot reloading
-- Production: esbuild for bundling server code
-- Frontend built separately with Vite
+**Schema** (defined in shared/schema.ts):
+- id: Deterministic ID from sector-title-index
+- Core fields: title, category, status, description
+- Metadata: industry, technology, impact, dateImplemented, organization
+- Additional: keyMetrics, challenges, solutions
 
-**Storage Layer**: 
-- Interface-based storage abstraction (IStorage)
-- In-memory implementation (MemStorage) for development
-- Designed to swap with database-backed implementation
-- Supports user management and AI cases CRUD operations
-
-**Development Features**:
-- Request/response logging middleware
-- Vite integration for HMR in development
-- Error handling middleware
-- Session support ready (connect-pg-simple dependency present)
-
-### Data Storage
-
-**ORM**: Drizzle ORM with PostgreSQL dialect
-
-**Database Schema** (defined in shared/schema.ts):
-1. **users** table:
-   - id (UUID primary key)
-   - username (unique text)
-   - password (text)
-
-2. **ai_cases** table:
-   - id (UUID primary key)
-   - Core fields: title, category, status, description
-   - Metadata: industry, technology, impact, dateImplemented, organization
-   - Additional: keyMetrics, challenges, solutions
-
-**Migration Strategy**: Drizzle Kit for schema migrations with `db:push` command
-
-**Current Data Source**: Static JSON file (ai-cases.json) containing pre-populated case studies, ready to be migrated to database
+**Static Deployment**: 
+- JSON data is bundled with the frontend at build time
+- No database or backend API required
+- All filtering and search happens client-side
 
 ### External Dependencies
 
-**Database**:
-- PostgreSQL via @neondatabase/serverless (Neon Database integration)
-- Drizzle ORM for type-safe database operations
-- Connection via DATABASE_URL environment variable
+**Data Processing** (build-time only):
+- xlsx for parsing Excel files (used in scripts/parse-excel.js)
 
 **UI Component Libraries**:
 - Radix UI primitives (@radix-ui/*) for accessible component foundations
