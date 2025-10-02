@@ -31,7 +31,7 @@ export default function Home() {
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
 
   const categories = useMemo(() => {
-    return Array.from(new Set(allAICases.map((c) => parseCategory(c.category)))).sort();
+    return Array.from(new Set(allAICases.map((c) => parseCategory(c.category)).filter(cat => cat !== ""))).sort();
   }, []);
 
   const statuses = useMemo(() => {
