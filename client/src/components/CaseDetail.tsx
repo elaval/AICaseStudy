@@ -10,7 +10,35 @@ interface CaseDetailProps {
   onBack: () => void;
 }
 
+function parseCategory(category: string): string {
+  if (!category) return "";
+  if (category.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(category);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : category;
+    } catch {
+      return category;
+    }
+  }
+  return category;
+}
+
+function parseCategoryArray(category: string): string[] {
+  if (!category) return [];
+  if (category.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(category);
+      return Array.isArray(parsed) ? parsed : [category];
+    } catch {
+      return [category];
+    }
+  }
+  return [category];
+}
+
 export function CaseDetail({ aiCase, onBack }: CaseDetailProps) {
+  const categories = parseCategoryArray(aiCase.category);
+  
   return (
     <div className="space-y-6">
       <div>
@@ -31,9 +59,11 @@ export function CaseDetail({ aiCase, onBack }: CaseDetailProps) {
                 {aiCase.title}
               </h1>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" data-testid="text-category">
-                  {aiCase.category}
-                </Badge>
+                {categories.map((cat, idx) => (
+                  <Badge key={idx} variant="secondary" data-testid={`text-category-${idx}`}>
+                    {cat}
+                  </Badge>
+                ))}
                 <Badge
                   variant={
                     aiCase.status === "Active" || aiCase.status === "Completed"

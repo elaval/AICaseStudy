@@ -9,14 +9,29 @@ interface CaseCardProps {
   onViewDetails: (id: string) => void;
 }
 
+function parseCategory(category: string): string {
+  if (!category) return "";
+  if (category.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(category);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : category;
+    } catch {
+      return category;
+    }
+  }
+  return category;
+}
+
 export function CaseCard({ aiCase, onViewDetails }: CaseCardProps) {
+  const displayCategory = parseCategory(aiCase.category);
+  
   return (
     <Card className="flex flex-col h-full hover:shadow-lg transition-shadow" data-testid={`card-case-${aiCase.id}`}>
       <CardHeader className="space-y-2 pb-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg font-semibold line-clamp-2">{aiCase.title}</h3>
           <Badge variant="secondary" className="shrink-0" data-testid={`badge-category-${aiCase.id}`}>
-            {aiCase.category}
+            {displayCategory}
           </Badge>
         </div>
         <Badge

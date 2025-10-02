@@ -10,6 +10,19 @@ import aiCasesData from "@/data/ai-cases.json";
 
 const allAICases: AICase[] = aiCasesData as AICase[];
 
+function parseCategory(category: string): string {
+  if (!category) return "";
+  if (category.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(category);
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : category;
+    } catch {
+      return category;
+    }
+  }
+  return category;
+}
+
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -18,7 +31,7 @@ export default function Home() {
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
 
   const categories = useMemo(() => {
-    return Array.from(new Set(allAICases.map((c) => c.category))).sort();
+    return Array.from(new Set(allAICases.map((c) => parseCategory(c.category)))).sort();
   }, []);
 
   const statuses = useMemo(() => {
@@ -39,9 +52,10 @@ export default function Home() {
         (aiCase.industry ?? "").toLowerCase().includes(q) ||
         (aiCase.primaryMode ?? "").toLowerCase().includes(q);
 
+      const parsedCategory = parseCategory(aiCase.category);
       const matchesCategory =
         selectedCategories.length === 0 ||
-        selectedCategories.includes(aiCase.category);
+        selectedCategories.includes(parsedCategory);
 
       const matchesStatus =
         selectedStatuses.length === 0 || selectedStatuses.includes(aiCase.status);
